@@ -17,7 +17,7 @@ int main() {
 
     remover(&lista, 2);
 
-    printf("\nDepois da remoção:\n");
+    printf("\nDepois da remocao:\n");
     imprimir(lista);
 
     liberar(lista);
