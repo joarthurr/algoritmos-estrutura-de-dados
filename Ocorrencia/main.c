@@ -1,25 +1,55 @@
 #include <stdio.h>
-#include "lista.h"
+#include "lista_estatica.h"
+#include "lista_dinamica.h"
 #include "ocorrencia.h"
 
-int main() {
-    No *lista = NULL;
+void testarListaEstatica() {
+    ListaEstatica lista;
+    inicializar_estatica(&lista);
 
     Ocorrencia o1 = {1, 5, 3.2, 10};
     Ocorrencia o2 = {2, 2, 1.5, 5};
     Ocorrencia o3 = {3, 4, 2.8, 7};
 
-    inserir(&lista, o1);
-    inserir(&lista, o2);
-    inserir(&lista, o3);
+    inserir_estatica(&lista, o1);
+    inserir_estatica(&lista, o2);
+    inserir_estatica(&lista, o3);
 
-    imprimir(lista);
+    imprimir_estatica(&lista);
 
-    remover(&lista, 2);
+    printf("\nRemovendo a Ocorrencia de ID 2\n");
+    remover_estatica(&lista, 2);
 
-    printf("\nDepois da remocao:\n");
-    imprimir(lista);
+    imprimir_estatica(&lista);
+}
 
-    liberar(lista);
+void testarListaDinamica() {
+    NoDinamico *lista = NULL;
+
+    Ocorrencia o1 = {1, 5, 3.2, 10};
+    Ocorrencia o2 = {2, 2, 1.5, 5};
+    Ocorrencia o3 = {3, 4, 2.8, 7};
+
+    inserir_dinamica(&lista, o1);
+    inserir_dinamica(&lista, o2);
+    inserir_dinamica(&lista, o3);
+
+    imprimir_dinamica(lista);
+
+    printf("\nRemovendo a Ocorrencia de ID 2\n");
+    remover_dinamica(&lista, 2);
+
+    imprimir_dinamica(lista);
+    liberar_dinamica(lista);
+}
+
+int main() {
+
+    printf("Testando Lista Estatica:\n");
+    testarListaEstatica();
+
+    printf("\nTestando Lista Dinamica:\n");
+    testarListaDinamica();
+
     return 0;
 }

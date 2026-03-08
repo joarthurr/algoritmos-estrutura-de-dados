@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "lista.h"
+#include "lista_dinamica.h"
 
-void inserir(No **lista, Ocorrencia o) {
-    No *novo = (No*) malloc(sizeof(No));
+void inserir_dinamica(NoDinamico **lista, Ocorrencia o) {
+    NoDinamico *novo = (NoDinamico*) malloc(sizeof(NoDinamico));
     if (novo == NULL) return;
 
     novo->dados = o;
@@ -11,16 +11,18 @@ void inserir(No **lista, Ocorrencia o) {
     *lista = novo;
 }
 
-void imprimir(No *lista) {
+void imprimir_dinamica(NoDinamico *lista) {
     while (lista != NULL) {
-        printf("ID: %d | Prioridade: %d\n",
+        printf("ID: %d | Prioridade: %d | Distancia: %.2f | Tempo Espera: %d min\n",
                lista->dados.id,
-               lista->dados.prioridade);
+               lista->dados.prioridade,
+               lista->dados.distancia,
+               lista->dados.tempoEspera);
         lista = lista->prox;
     }
 }
 
-No* buscar(No *lista, int id) {
+NoDinamico* buscar_dinamico(NoDinamico *lista, int id) {
     while (lista != NULL) {
         if (lista->dados.id == id)
             return lista;
@@ -29,9 +31,9 @@ No* buscar(No *lista, int id) {
     return NULL;
 }
 
-void remover(No **lista, int id) {
-    No *atual = *lista;
-    No *anterior = NULL;
+void remover_dinamica(NoDinamico **lista, int id) {
+    NoDinamico *atual = *lista;
+    NoDinamico *anterior = NULL;
 
     while (atual != NULL && atual->dados.id != id) {
         anterior = atual;
@@ -48,9 +50,9 @@ void remover(No **lista, int id) {
 
     free(atual);
 }
-void liberar(No *lista) {
+void liberar_dinamica(NoDinamico *lista) {
     while (lista != NULL) {
-        No *tmp = lista;
+        NoDinamico *tmp = lista;
         lista = lista->prox;
         free(tmp);
     }
