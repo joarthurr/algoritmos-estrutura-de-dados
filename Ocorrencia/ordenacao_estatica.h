@@ -7,5 +7,6 @@
 
 void bubbleSortEstatica(ListaEstatica *l);
 void selectionSortEstatica(ListaEstatica *l);
+void mergeSortEstatica(ListaEstatica *l);
 
 #endif
