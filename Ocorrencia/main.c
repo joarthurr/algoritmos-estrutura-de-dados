@@ -7,6 +7,21 @@
 #include "ordenacao_estatica.h"
 #include "ordenacao_dinamica.h"
 
+// GERAÇÃO DE GRÁFICOS
+
+void salvar_dados_csv(const char *nome_arquivo, int n, int estrutura, int algoritmo, int tipo, double tempo_ms) {
+    FILE *file = fopen(nome_arquivo, "a");
+    if (file == NULL) return;
+    
+    fseek(file, 0, SEEK_END);
+    if (ftell(file) == 0) {
+        fprintf(file, "N,Estrutura,Algoritmo,TipoDados,Tempo_ms\n");
+    }
+
+    fprintf(file, "%d,%d,%d,%d,%f\n", n, estrutura, algoritmo, tipo, tempo_ms);
+    fclose(file);
+}
+
 //GERAÇÃO DE DADOS
 
 Ocorrencia gerarOcorrencia(int id) {
@@ -45,7 +60,7 @@ int main() {
     int n, tipo, estrutura, algoritmo;
     const int REPETICOES = 100; 
 
-    printf("Ordenaçao de prioridade das Ocorencias:\n\n");
+    printf("\nOrdenaçao de prioridade das Ocorencias:\n\n");
     printf("Estrutura (1-Estatica, 2-Dinamica): ");
     scanf("%d", &estrutura);
     printf("Algoritmo (1-Bubble, 2-Insertion, 3-Selection, 5-Merge): ");
@@ -128,6 +143,9 @@ int main() {
     }
 
     double media_ms = (tempo_total / REPETICOES) * 1000.0;
+
+    salvar_dados_csv("resultados_ordenacao.csv", n, estrutura, algoritmo, tipo, media_ms);
+
     printf("\n========================================");
     printf("\nRESULTADO FINAL PARA N = %d", n);
     printf("\nTempo Medio: %f ms", media_ms);
