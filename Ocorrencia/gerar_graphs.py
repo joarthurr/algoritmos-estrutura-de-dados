@@ -1,31 +1,60 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import os
 
-df = pd.read_csv('resultados_ordenacao.csv')
+# 1. Configuração de Caminho e Leitura
+# Isso garante que o Python ache o CSV se ele estiver na mesma pasta do script
+diretorio_atual = os.path.dirname(__file__)
+caminho_csv = os.path.join(diretorio_atual, 'resultados_ordenacao.csv')
 
+try:
+    # Lendo o CSV - O pandas vai usar automaticamente a primeira linha como cabeçalho
+    df = pd.read_csv(caminho_csv, sep=';')
+except FileNotFoundError:
+    print(f"Erro: O arquivo '{caminho_csv}' não foi encontrado.")
+    exit()
+
+# 2. Configurações Estéticas
 plt.style.use('seaborn-v0_8-darkgrid')
 plt.figure(figsize=(10, 6))
 
-nomes_algoritmos = {1: 'Bubble Sort', 2: 'Insertion Sort', 3: 'Selection Sort', 5: 'Merge Sort'}
-nomes_tipos = {0: 'Aleatoria', 1: 'Inversa', 2: 'Ordenada'}
+# Dicionários para legendas
+algoritmos = {1: 'Bubble', 2: 'Insertion', 3: 'Selection', 5: 'Merge'}
 
-dados_estatica = df[df['Estrutura'] == 1]
+# --- FILTROS PARA O GRÁFICO ---
+# Altere aqui para gerar gráficos diferentes para o seu artigo
+estrutura_alvo = 2  # 2 = Dinâmica, 1 = Estática
+tipo_alvo = 1       # 1 = Inverso (Pior Caso), 0 = Aleatório, 2 = Ordenado
 
-for alg_id, nome_alg in nomes_algoritmos.items():
-    for tipo_id, nome_tipo in nomes_tipos.items():
-        
-        dados_plot = dados_estatica[(dados_estatica['Algoritmo'] == alg_id) & (dados_estatica['TipoDados'] == tipo_id)]
-        dados_plot = dados_plot.sort_values(by='N') 
-        
-        if not dados_plot.empty:
-            plt.plot(dados_plot['N'], dados_plot['Tempo_ms'], marker='o', linewidth=2, label=f"{nome_alg} ({nome_tipo})")
+# 3. Loop de Plotagem
+tem_dados = False
+for alg_id, nome in algoritmos.items():
+    # Filtrando os dados conforme os alvos definidos
+    dados = df[(df['Estrutura'] == estrutura_alvo) & 
+               (df['Algoritmo'] == alg_id) & 
+               (df['TipoDados'] == tipo_alvo)]
+    
+    # Ordena pelo volume N para a linha seguir a ordem correta
+    dados = dados.sort_values('N')
+    
+    if not dados.empty:
+        plt.plot(dados['N'], dados['Tempo_ms'], marker='o', label=nome, linewidth=2)
+        tem_dados = True
 
-plt.title('Performance de Ordenacao (Lista Estatica - Todos os Casos)', fontsize=16)
-plt.xlabel('Quantidade de Ocorrencias (N)', fontsize=12)
-plt.ylabel('Tempo Medio (ms)', fontsize=12)
-
-plt.legend(fontsize=10, bbox_to_anchor=(1.05, 1), loc='upper left')
-plt.grid(True)
-
-plt.savefig('grafico_performance.png', dpi=300, bbox_inches='tight')
-plt.show()
+# 4. Finalização do Gráfico
+if tem_dados:
+    tipos_nome = {0: 'Aleatório', 1: 'Inverso (Pior Caso)', 2: 'Ordenado'}
+    est_nome = {1: 'Lista Estática', 2: 'Lista Dinâmica'}
+    
+    plt.title(f'Desempenho: {est_nome[estrutura_alvo]} - Cenário {tipos_nome[tipo_alvo]}')
+    plt.xlabel('Quantidade de Elementos (N)')
+    plt.ylabel('Tempo Médio (ms)')
+    plt.legend()
+    plt.grid(True)
+    
+    # Salva o gráfico para usar no Word/Artigo
+    plt.savefig('grafico_pior_caso.png', dpi=300, bbox_inches='tight')
+    print("Gráfico gerado com sucesso: 'grafico_pior_caso.png'")
+    plt.show()
+else:
+    print(f"Nenhum dado encontrado para Estrutura {estrutura_alvo} e Tipo {tipo_alvo}.")

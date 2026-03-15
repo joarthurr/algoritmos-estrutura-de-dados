@@ -1,7 +1,7 @@
 #include "ordenacao_dinamica.h"
 #include <stddef.h>
 
-void bubbleSortDinamica(NoDinamico *inicio) {
+void bubbleSortDinamica(NoDinamico *inicio, long int *comp) {
     if (inicio == NULL) return;
 
     int trocou;
@@ -13,7 +13,7 @@ void bubbleSortDinamica(NoDinamico *inicio) {
         atual = inicio;
 
         while (atual->prox != fim) {
-            // Critério: Prioridade (Maior para Menor)
+            (*comp)++; // Métrica: Comparação de prioridade 
             if (atual->dados.prioridade < atual->prox->dados.prioridade) {
                 Ocorrencia temp = atual->dados;
                 atual->dados = atual->prox->dados;
@@ -25,15 +25,16 @@ void bubbleSortDinamica(NoDinamico *inicio) {
         fim = atual;
     } while (trocou);
 }
-void selectionSortDinamica(NoDinamico *inicio) {
+
+void selectionSortDinamica(NoDinamico *inicio, long int *comp) {
     if (inicio == NULL) return;
 
     NoDinamico *i, *j, *maior;
 
     for (i = inicio; i->prox != NULL; i = i->prox) {
         maior = i;
-
         for (j = i->prox; j != NULL; j = j->prox) {
+            (*comp)++; // Métrica: Comparação de busca pelo maior 
             if (j->dados.prioridade > maior->dados.prioridade) {
                 maior = j;
             }
@@ -47,7 +48,7 @@ void selectionSortDinamica(NoDinamico *inicio) {
     }
 }
 
-void insertionSortDinamica(NoDinamico **inicio) {
+void insertionSortDinamica(NoDinamico **inicio, long int *comp) {
     if (*inicio == NULL || (*inicio)->prox == NULL) return;
 
     NoDinamico *lista_ordenada = NULL;
@@ -56,42 +57,47 @@ void insertionSortDinamica(NoDinamico **inicio) {
     while (atual != NULL) {
         NoDinamico *proximo_atual = atual->prox;
 
+        (*comp)++; // Comparação para inserção no início ou lista vazia
         if (lista_ordenada == NULL || atual->dados.prioridade > lista_ordenada->dados.prioridade) {
             atual->prox = lista_ordenada;
             lista_ordenada = atual;
         } else {
             NoDinamico *temp = lista_ordenada;
-            while (temp->prox != NULL && temp->prox->dados.prioridade >= atual->dados.prioridade) {
-                temp = temp->prox;
+            while (temp->prox != NULL) {
+                (*comp)++; // Comparação do laço de busca da posição
+                if (temp->prox->dados.prioridade >= atual->dados.prioridade) {
+                    temp = temp->prox;
+                } else {
+                    break;
+                }
             }
-            
             atual->prox = temp->prox;
             temp->prox = atual;
         }
-
         atual = proximo_atual;
     }
-
     *inicio = lista_ordenada;
 }
 
-NoDinamico* intercalarDinamica(NoDinamico *esq, NoDinamico *dir) {
+// Funções auxiliares para o Merge Sort com contador
+NoDinamico* intercalarDinamica(NoDinamico *esq, NoDinamico *dir, long int *comp) {
     if (esq == NULL) return dir;
     if (dir == NULL) return esq;
 
     NoDinamico *resultado = NULL;
 
+    (*comp)++; // Métrica: Comparação durante a intercalação 
     if (esq->dados.prioridade >= dir->dados.prioridade) {
         resultado = esq;
-        resultado->prox = intercalarDinamica(esq->prox, dir);
+        resultado->prox = intercalarDinamica(esq->prox, dir, comp);
     } else {
         resultado = dir;
-        resultado->prox = intercalarDinamica(esq, dir->prox);
+        resultado->prox = intercalarDinamica(esq, dir->prox, comp);
     }
     return resultado;
 }
 
-NoDinamico* mergeSortRecursivoDinamica(NoDinamico *inicio) {
+NoDinamico* mergeSortRecursivoDinamica(NoDinamico *inicio, long int *comp) {
     if (inicio == NULL || inicio->prox == NULL) return inicio;
 
     NoDinamico *slow = inicio;
@@ -105,10 +111,11 @@ NoDinamico* mergeSortRecursivoDinamica(NoDinamico *inicio) {
     NoDinamico *meio = slow->prox;
     slow->prox = NULL;
 
-    return intercalarDinamica(mergeSortRecursivoDinamica(inicio), 
-                             mergeSortRecursivoDinamica(meio));
+    return intercalarDinamica(mergeSortRecursivoDinamica(inicio, comp), 
+                             mergeSortRecursivoDinamica(meio, comp), 
+                             comp);
 }
 
-void mergeSortDinamica(NoDinamico **inicio) {
-    *inicio = mergeSortRecursivoDinamica(*inicio);
+void mergeSortDinamica(NoDinamico **inicio, long int *comp) {
+    *inicio = mergeSortRecursivoDinamica(*inicio, comp);
 }

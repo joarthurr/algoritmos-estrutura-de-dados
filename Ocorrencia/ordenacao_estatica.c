@@ -1,6 +1,6 @@
 #include "ordenacao_estatica.h"
 
-void bubbleSortEstatica(ListaEstatica *l) {
+void bubbleSortEstatica(ListaEstatica *l, long int *comp) {
     if (l->inicio == -1) return;
 
     int trocou;
@@ -14,6 +14,7 @@ void bubbleSortEstatica(ListaEstatica *l) {
         while (l->nos[atual].prox != fim) {
             int proximo = l->nos[atual].prox;
             
+            (*comp)++; // Métrica: Comparação de prioridade [cite: 39]
             if (l->nos[atual].dados.prioridade < l->nos[proximo].dados.prioridade) {
                 Ocorrencia temp = l->nos[atual].dados;
                 l->nos[atual].dados = l->nos[proximo].dados;
@@ -25,7 +26,8 @@ void bubbleSortEstatica(ListaEstatica *l) {
         fim = atual;
     } while (trocou);
 }
-void selectionSortEstatica(ListaEstatica *l) {
+
+void selectionSortEstatica(ListaEstatica *l, long int *comp) {
     if (l->inicio == -1) return;
 
     int i, j, maior;
@@ -33,6 +35,7 @@ void selectionSortEstatica(ListaEstatica *l) {
     for (i = l->inicio; l->nos[i].prox != -1; i = l->nos[i].prox) {
         maior = i; 
         for (j = l->nos[i].prox; j != -1; j = l->nos[j].prox) {
+            (*comp)++; // Métrica: Comparação para busca do maior [cite: 39]
             if (l->nos[j].dados.prioridade > l->nos[maior].dados.prioridade) {
                 maior = j;
             }
@@ -46,7 +49,7 @@ void selectionSortEstatica(ListaEstatica *l) {
     }
 }
 
-void insertionSortEstatica(ListaEstatica *l) {
+void insertionSortEstatica(ListaEstatica *l, long int *comp) {
     if (l->inicio == -1 || l->nos[l->inicio].prox == -1) return;
 
     int lista_ordenada = l->inicio;
@@ -57,50 +60,50 @@ void insertionSortEstatica(ListaEstatica *l) {
     while (atual != -1) {
         int proximo_atual = l->nos[atual].prox;
 
+        (*comp)++; // Comparação de inserção imediata [cite: 39]
         if (l->nos[atual].dados.prioridade > l->nos[lista_ordenada].dados.prioridade) {
             l->nos[atual].prox = lista_ordenada;
             lista_ordenada = atual;
         } else {
             int temp = lista_ordenada;
-            while (l->nos[temp].prox != -1 && 
-                   l->nos[l->nos[temp].prox].dados.prioridade >= l->nos[atual].dados.prioridade) {
-                temp = l->nos[temp].prox;
+            while (l->nos[temp].prox != -1) {
+                (*comp)++; // Comparação para encontrar posição no meio da lista [cite: 39]
+                if (l->nos[l->nos[temp].prox].dados.prioridade >= l->nos[atual].dados.prioridade) {
+                    temp = l->nos[temp].prox;
+                } else {
+                    break;
+                }
             }
             
             l->nos[atual].prox = l->nos[temp].prox;
             l->nos[temp].prox = atual;
         }
-
         atual = proximo_atual;
     }
-    
     l->inicio = lista_ordenada;
 }
 
-
-// Função auxiliar para intercalar duas metades
-int intercalarEstatica(ListaEstatica *l, int esq, int dir) {
+// Função auxiliar para intercalar com contador
+int intercalarEstatica(ListaEstatica *l, int esq, int dir, long int *comp) {
     if (esq == -1) return dir;
     if (dir == -1) return esq;
 
     int resultado = -1;
 
-    // Critério: Maior prioridade primeiro
+    (*comp)++; // Métrica: Comparação durante a intercalação do Merge [cite: 39]
     if (l->nos[esq].dados.prioridade >= l->nos[dir].dados.prioridade) {
         resultado = esq;
-        l->nos[resultado].prox = intercalarEstatica(l, l->nos[esq].prox, dir);
+        l->nos[resultado].prox = intercalarEstatica(l, l->nos[esq].prox, dir, comp);
     } else {
         resultado = dir;
-        l->nos[resultado].prox = intercalarEstatica(l, esq, l->nos[dir].prox);
+        l->nos[resultado].prox = intercalarEstatica(l, esq, l->nos[dir].prox, comp);
     }
     return resultado;
 }
 
-// Função recursiva do Merge Sort
-int mergeSortRecursivoEstatica(ListaEstatica *l, int inicio) {
+int mergeSortRecursivoEstatica(ListaEstatica *l, int inicio, long int *comp) {
     if (inicio == -1 || l->nos[inicio].prox == -1) return inicio;
 
-    // Achar o meio usando Slow e Fast pointers
     int slow = inicio;
     int fast = l->nos[inicio].prox;
 
@@ -110,16 +113,14 @@ int mergeSortRecursivoEstatica(ListaEstatica *l, int inicio) {
     }
 
     int meio = l->nos[slow].prox;
-    l->nos[slow].prox = -1; // Divide a lista em duas
+    l->nos[slow].prox = -1;
 
-    // Recursão
-    int esq = mergeSortRecursivoEstatica(l, inicio);
-    int dir = mergeSortRecursivoEstatica(l, meio);
-
-    // Intercala
-    return intercalarEstatica(l, esq, dir);
+    return intercalarEstatica(l, 
+                             mergeSortRecursivoEstatica(l, inicio, comp), 
+                             mergeSortRecursivoEstatica(l, meio, comp), 
+                             comp);
 }
 
-void mergeSortEstatica(ListaEstatica *l) {
-    l->inicio = mergeSortRecursivoEstatica(l, l->inicio);
+void mergeSortEstatica(ListaEstatica *l, long int *comp) {
+    l->inicio = mergeSortRecursivoEstatica(l, l->inicio, comp);
 }
