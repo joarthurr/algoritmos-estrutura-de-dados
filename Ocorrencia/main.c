@@ -68,7 +68,7 @@ int main() {
     scanf("%d", &tipo);
 
     double tempo_total = 0;
-    printf("\nProcessando %d repeticoes para coletar a média...\n", REPETICOES);
+    printf("\nProcessando %d repeticoes para coletar a media...\n", REPETICOES);
 
     for (int r = 0; r < REPETICOES; r++) {
         if (estrutura == 1) {
@@ -84,6 +84,7 @@ int main() {
             switch(algoritmo) {
                 case 1: bubbleSortEstatica(&le); break;
                 // case 2: insertionSortEstatica(&le); break; // Implementar futuramente
+                case 3: selectionSortEstatica(&le); break;
                 default: printf("Algoritmo ainda nao implementado para Estatica.\n"); return 0;
             }
             clock_t end = clock();
@@ -101,6 +102,7 @@ int main() {
             switch(algoritmo) {
                 case 1: bubbleSortDinamica(ld); break;
                 // case 2: insertionSortDinamica(ld); break; // Implementar futuramente
+                case 3: selectionSortDinamica(ld); break;
                 default: printf("Algoritmo ainda nao implementado para Dinamica.\n"); return 0;
             }
             clock_t end = clock();
@@ -111,7 +113,7 @@ int main() {
 
     double media_ms = (tempo_total / REPETICOES) * 1000.0;
     printf("\n========================================");
-    printf("\nRESULTADO DA MEDIA (Metrica: Tempo de Execuçao)");
+    printf("\nRESULTADO DA MEDIA (Metrica: Tempo de Execucao)");
     printf("\nTempo Medio: %f ms", media_ms);
     printf("\n========================================\n");
 
