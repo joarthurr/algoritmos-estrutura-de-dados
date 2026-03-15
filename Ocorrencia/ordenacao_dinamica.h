@@ -3,9 +3,9 @@
 #include "lista_dinamica.h"
 #include "lista_estatica.h"
 
-void bubbleSortDinamica(NoDinamico *inicio);
-void selectionSortDinamica(NoDinamico *inicio);
-void insertionSortDinamica(NoDinamico **inicio);
-void mergeSortDinamica(NoDinamico **inicio);
+void bubbleSortDinamica(NoDinamico *inicio, long int *comp);
+void selectionSortDinamica(NoDinamico *inicio, long int *comp);
+void insertionSortDinamica(NoDinamico **inicio, long int *comp);
+void mergeSortDinamica(NoDinamico **inicio, long int *comp);
 
 #endif

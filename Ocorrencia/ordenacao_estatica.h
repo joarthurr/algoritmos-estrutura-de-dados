@@ -4,9 +4,9 @@
 #include "lista_estatica.h"
 #include "lista_dinamica.h"
 
-void bubbleSortEstatica(ListaEstatica *l);
-void selectionSortEstatica(ListaEstatica *l);
-void insertionSortEstatica(ListaEstatica *l);
-void mergeSortEstatica(ListaEstatica *l);
+void bubbleSortEstatica(ListaEstatica *l, long int *comp);
+void selectionSortEstatica(ListaEstatica *l, long int *comp);
+void insertionSortEstatica(ListaEstatica *l, long int *comp);
+void mergeSortEstatica(ListaEstatica *l, long int *comp);
 
 #endif
