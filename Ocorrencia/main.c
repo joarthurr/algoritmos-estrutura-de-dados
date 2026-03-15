@@ -1,5 +1,3 @@
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -9,19 +7,6 @@
 #include "ordenacao_estatica.h"
 #include "ordenacao_dinamica.h"
 
-// GERAÇÃO DE GRÁFICOS
-void salvar_dados_csv(const char *nome_arquivo, int n, int estrutura, int algoritmo, int tipo, double tempo_ms, long long int comparacoes) {
-    FILE *file = fopen(nome_arquivo, "a");
-    if (file == NULL) return;
-    fseek(file, 0, SEEK_END);
-    if (ftell(file) == 0) {
-        fprintf(file, "N;Estrutura;Algoritmo;TipoDados;Tempo_ms;Comparacoes\n");
-    }
-    fprintf(file, "%d;%d;%d;%d;%.4f;%lld\n", n, estrutura, algoritmo, tipo, tempo_ms, comparacoes);
-    fclose(file);
-}
-
-// GERAÇÃO DE DADOS
 // GERAÇÃO DE GRÁFICOS
 void salvar_dados_csv(const char *nome_arquivo, int n, int estrutura, int algoritmo, int tipo, double tempo_ms, long long int comparacoes) {
     FILE *file = fopen(nome_arquivo, "a");
@@ -48,11 +33,8 @@ Ocorrencia gerarOcorrenciaInversa(int id, int n) {
     Ocorrencia o;
     o.id = id;
     // Pior caso: Gera prioridades menores primeiro (ex: 1, 1, 2...) 
-    o.prioridade = 1 + ((id - 1) * 5 / n); 
-    if(o.prioridade > 5) o.prioridade = 5;
-    // Pior caso: Gera prioridades menores primeiro (ex: 1, 1, 2...) 
-    o.prioridade = 1 + ((id - 1) * 5 / n); 
-    if(o.prioridade > 5) o.prioridade = 5;
+    o.prioridade = 5 - ((id - 1) * 5 / n); 
+    if(o.prioridade < 1) o.prioridade = 1;
     o.distancia = id * 0.1f;
     o.tempoEspera = n - id;
     return o;
@@ -62,16 +44,12 @@ Ocorrencia gerarOcorrenciaOrdenada(int id, int n) {
     Ocorrencia o;
     o.id = id;
     // Melhor caso: Gera prioridades maiores primeiro (5, 5, 4...)
-    o.prioridade = 5 - ((id - 1) * 5 / n); 
-    if(o.prioridade < 1) o.prioridade = 1;
-    // Melhor caso: Gera prioridades maiores primeiro (5, 5, 4...)
-    o.prioridade = 5 - ((id - 1) * 5 / n); 
-    if(o.prioridade < 1) o.prioridade = 1;
+    o.prioridade = 1 + ((id - 1) * 5 / n); 
+    if(o.prioridade > 5) o.prioridade = 5;
     o.distancia = (n - id) * 0.1f;
     o.tempoEspera = id;
     return o;
 }
-
 int main() {
     srand(time(NULL));
     int n, tipo, estrutura, algoritmo;
@@ -87,7 +65,6 @@ int main() {
     printf("Tipo (0-Aleatoria, 1-Inversa, 2-Ordenada): ");
     scanf("%d", &tipo);
 
-    //TESTE 
     //TESTE 
     if (n <= 20) {
         long int comp_teste = 0;
@@ -123,7 +100,6 @@ int main() {
         printf("\nFIM DO MODO TESTE\n\n");
     }
 
-    //TESTE DE PERFORMANCE
     //TESTE DE PERFORMANCE
     double tempo_total = 0;
     long long int total_comparacoes = 0; 
