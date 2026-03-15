@@ -14,7 +14,7 @@ void bubbleSortEstatica(ListaEstatica *l, long int *comp) {
         while (l->nos[atual].prox != fim) {
             int proximo = l->nos[atual].prox;
             
-            (*comp)++; // Métrica: Comparação de prioridade [cite: 39]
+            (*comp)++; 
             if (l->nos[atual].dados.prioridade < l->nos[proximo].dados.prioridade) {
                 Ocorrencia temp = l->nos[atual].dados;
                 l->nos[atual].dados = l->nos[proximo].dados;
@@ -35,7 +35,7 @@ void selectionSortEstatica(ListaEstatica *l, long int *comp) {
     for (i = l->inicio; l->nos[i].prox != -1; i = l->nos[i].prox) {
         maior = i; 
         for (j = l->nos[i].prox; j != -1; j = l->nos[j].prox) {
-            (*comp)++; // Métrica: Comparação para busca do maior [cite: 39]
+            (*comp)++; 
             if (l->nos[j].dados.prioridade > l->nos[maior].dados.prioridade) {
                 maior = j;
             }
@@ -60,14 +60,14 @@ void insertionSortEstatica(ListaEstatica *l, long int *comp) {
     while (atual != -1) {
         int proximo_atual = l->nos[atual].prox;
 
-        (*comp)++; // Comparação de inserção imediata [cite: 39]
+        (*comp)++; 
         if (l->nos[atual].dados.prioridade > l->nos[lista_ordenada].dados.prioridade) {
             l->nos[atual].prox = lista_ordenada;
             lista_ordenada = atual;
         } else {
             int temp = lista_ordenada;
             while (l->nos[temp].prox != -1) {
-                (*comp)++; // Comparação para encontrar posição no meio da lista [cite: 39]
+                (*comp)++; 
                 if (l->nos[l->nos[temp].prox].dados.prioridade >= l->nos[atual].dados.prioridade) {
                     temp = l->nos[temp].prox;
                 } else {
@@ -90,7 +90,7 @@ int intercalarEstatica(ListaEstatica *l, int esq, int dir, long int *comp) {
 
     int resultado = -1;
 
-    (*comp)++; // Métrica: Comparação durante a intercalação do Merge [cite: 39]
+    (*comp)++; 
     if (l->nos[esq].dados.prioridade >= l->nos[dir].dados.prioridade) {
         resultado = esq;
         l->nos[resultado].prox = intercalarEstatica(l, l->nos[esq].prox, dir, comp);
@@ -123,4 +123,50 @@ int mergeSortRecursivoEstatica(ListaEstatica *l, int inicio, long int *comp) {
 
 void mergeSortEstatica(ListaEstatica *l, long int *comp) {
     l->inicio = mergeSortRecursivoEstatica(l, l->inicio, comp);
+}
+
+int partitionIndices(ListaEstatica *l, int indices[], int low, int high, long int *comp) {
+    int pivot = indices[high];
+    int i = low - 1;
+    for (int j = low; j < high; j++) {
+        (*comp)++; 
+        if (l->nos[indices[j]].dados.prioridade >= l->nos[pivot].dados.prioridade) {
+            i++;
+            int temp = indices[i];
+            indices[i] = indices[j];
+            indices[j] = temp;
+        }
+    }
+    int temp = indices[i+1];
+    indices[i+1] = indices[high];
+    indices[high] = temp;
+    return i+1;
+}
+
+void quickSortIndices(ListaEstatica *l, int indices[], int low, int high, long int *comp) {
+    if (low < high) {
+        int pi = partitionIndices(l, indices, low, high, comp);
+        quickSortIndices(l, indices, low, pi-1, comp);
+        quickSortIndices(l, indices, pi+1, high, comp);
+    }
+}
+
+void quickSortEstatica(ListaEstatica *l, long int *comp) {
+    if (l->inicio == -1) return;
+
+    int indices[MAX_OCORRENCIAS];
+    int count = 0;
+    int curr = l->inicio;
+    while (curr != -1) {
+        indices[count++] = curr;
+        curr = l->nos[curr].prox;
+    }
+
+    quickSortIndices(l, indices, 0, count-1, comp);
+
+    for (int i = 0; i < count-1; i++) {
+        l->nos[indices[i]].prox = indices[i+1];
+    }
+    l->nos[indices[count-1]].prox = -1;
+    l->inicio = indices[0];
 }
