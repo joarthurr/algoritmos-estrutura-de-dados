@@ -13,7 +13,7 @@ except FileNotFoundError:
     exit()
 
 # 2. Dicionários de Mapeamento
-algoritmos = {1: 'Bubble', 2: 'Insertion', 3: 'Selection', 5: 'Merge'}
+algoritmos = {1: 'Bubble', 2: 'Insertion', 3: 'Selection',4: 'Quick', 5: 'Merge'}
 tipos_nome = {0: 'Aleatório', 1: 'Inverso', 2: 'Ordenado'}
 est_nome = {1: 'Estática', 2: 'Dinâmica'}
 
