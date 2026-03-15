@@ -46,8 +46,34 @@ void selectionSortDinamica(NoDinamico *inicio) {
         }
     }
 }
-#include "ordenacao_dinamica.h"
-#include <stddef.h>
+
+void insertionSortDinamica(NoDinamico **inicio) {
+    if (*inicio == NULL || (*inicio)->prox == NULL) return;
+
+    NoDinamico *lista_ordenada = NULL;
+    NoDinamico *atual = *inicio;
+
+    while (atual != NULL) {
+        NoDinamico *proximo_atual = atual->prox;
+
+        if (lista_ordenada == NULL || atual->dados.prioridade > lista_ordenada->dados.prioridade) {
+            atual->prox = lista_ordenada;
+            lista_ordenada = atual;
+        } else {
+            NoDinamico *temp = lista_ordenada;
+            while (temp->prox != NULL && temp->prox->dados.prioridade >= atual->dados.prioridade) {
+                temp = temp->prox;
+            }
+            
+            atual->prox = temp->prox;
+            temp->prox = atual;
+        }
+
+        atual = proximo_atual;
+    }
+
+    *inicio = lista_ordenada;
+}
 
 NoDinamico* intercalarDinamica(NoDinamico *esq, NoDinamico *dir) {
     if (esq == NULL) return dir;

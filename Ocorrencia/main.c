@@ -45,10 +45,10 @@ int main() {
     int n, tipo, estrutura, algoritmo;
     const int REPETICOES = 100; 
 
-    printf("Ordenação de prioridade das Ocorencias:\n");
+    printf("Ordenaçao de prioridade das Ocorencias:\n\n");
     printf("Estrutura (1-Estatica, 2-Dinamica): ");
     scanf("%d", &estrutura);
-    printf("Algoritmo (1-Bubble, 3-Selection, 5-Merge): ");
+    printf("Algoritmo (1-Bubble, 2-Insertion, 3-Selection, 5-Merge): ");
     scanf("%d", &algoritmo);
     printf("Quantidade de dados (N): ");
     scanf("%d", &n);
@@ -67,7 +67,9 @@ int main() {
             }
             printf("\nLista antes:\n"); imprimir_estatica(&le);
             if (algoritmo == 1) bubbleSortEstatica(&le);
+            else if (algoritmo == 2) insertionSortEstatica(&le);
             else if (algoritmo == 3) selectionSortEstatica(&le);
+            else if (algoritmo == 5) mergeSortEstatica(&le);
             printf("\nLista depois:\n"); imprimir_estatica(&le);
         } else {
             NoDinamico *ld = NULL;
@@ -77,9 +79,10 @@ int main() {
             }
             printf("\nLISTA ANTES:"); imprimir_dinamica(ld);
             if (algoritmo == 1) bubbleSortDinamica(ld);
+            else if (algoritmo == 2) insertionSortDinamica(&ld);
             else if (algoritmo == 3) selectionSortDinamica(ld);
+            else if (algoritmo == 5) mergeSortDinamica(&ld);
             printf("\nLISTA DEPOIS (Ordenada por Prioridade):"); imprimir_dinamica(ld);
-            liberar_dinamica(ld);
         }
         printf("\n--- FIM DO MODO TESTE ---\n\n");
     }
@@ -99,9 +102,11 @@ int main() {
 
             clock_t start = clock();
             if (algoritmo == 1) bubbleSortEstatica(&le);
+            else if (algoritmo == 2) insertionSortEstatica(&le);
             else if (algoritmo == 3) selectionSortEstatica(&le);
             else if(algoritmo == 5) mergeSortEstatica(&le);
             clock_t end = clock();
+
             tempo_total += ((double)(end - start)) / CLOCKS_PER_SEC;
 
         } else {
@@ -113,6 +118,7 @@ int main() {
 
             clock_t start = clock();
             if (algoritmo == 1) bubbleSortDinamica(ld);
+            else if (algoritmo == 2) insertionSortDinamica(&ld);
             else if (algoritmo == 3) selectionSortDinamica(ld);
             else if (algoritmo == 5) mergeSortDinamica(&ld);
             clock_t end = clock();
