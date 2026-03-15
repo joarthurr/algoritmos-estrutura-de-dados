@@ -19,7 +19,7 @@ plt.style.use('seaborn-v0_8-darkgrid')
 plt.figure(figsize=(10, 6))
 
 # Dicionários para legendas
-algoritmos = {1: 'Bubble', 2: 'Insertion', 3: 'Selection', 5: 'Merge'}
+algoritmos = {1: 'Bubble', 2: 'Insertion', 3: 'Selection', 4: 'Quick', 5: 'Merge'}
 
 # --- FILTROS PARA O GRÁFICO ---
 # Altere aqui para gerar gráficos diferentes para o seu artigo
