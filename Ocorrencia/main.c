@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -33,8 +34,8 @@ Ocorrencia gerarOcorrenciaInversa(int id, int n) {
     Ocorrencia o;
     o.id = id;
     // Pior caso: Gera prioridades menores primeiro (ex: 1, 1, 2...) 
-    o.prioridade = 5 - ((id - 1) * 5 / n); 
-    if(o.prioridade < 1) o.prioridade = 1;
+    o.prioridade = 1 + ((id - 1) * 5 / n); 
+    if(o.prioridade > 5) o.prioridade = 5;
     o.distancia = id * 0.1f;
     o.tempoEspera = n - id;
     return o;
@@ -44,12 +45,13 @@ Ocorrencia gerarOcorrenciaOrdenada(int id, int n) {
     Ocorrencia o;
     o.id = id;
     // Melhor caso: Gera prioridades maiores primeiro (5, 5, 4...)
-    o.prioridade = 1 + ((id - 1) * 5 / n); 
-    if(o.prioridade > 5) o.prioridade = 5;
+    o.prioridade = 5 - ((id - 1) * 5 / n); 
+    if(o.prioridade < 1) o.prioridade = 1;
     o.distancia = (n - id) * 0.1f;
     o.tempoEspera = id;
     return o;
 }
+
 int main() {
     srand(time(NULL));
     int n, tipo, estrutura, algoritmo;
@@ -58,7 +60,7 @@ int main() {
     printf("\nANALISE DE DESEMPENHO: ORDENACAO DE OCORRENCIAS\n");
     printf("Estrutura (1-Estatica, 2-Dinamica): ");
     scanf("%d", &estrutura);
-    printf("Algoritmo (1-Bubble, 2-Insertion, 3-Selection, 5-Merge): ");
+    printf("Algoritmo (1-Bubble, 2-Insertion, 3-Selection, 4-Quick, 5-Merge): ");
     scanf("%d", &algoritmo);
     printf("Quantidade de dados (N): ");
     scanf("%d", &n);
@@ -80,6 +82,7 @@ int main() {
             if (algoritmo == 1) bubbleSortEstatica(&le, &comp_teste);
             else if (algoritmo == 2) insertionSortEstatica(&le, &comp_teste);
             else if (algoritmo == 3) selectionSortEstatica(&le, &comp_teste);
+            else if (algoritmo == 4) quickSortEstatica(&le, &comp_teste);
             else if (algoritmo == 5) mergeSortEstatica(&le, &comp_teste);
             printf("\nLISTA DEPOIS:\n"); imprimir_estatica(&le);
         } else {
@@ -88,12 +91,13 @@ int main() {
                 Ocorrencia o = (tipo == 0) ? gerarOcorrencia(i+1) : (tipo == 1 ? gerarOcorrenciaInversa(i+1, n) : gerarOcorrenciaOrdenada(i+1, n));
                 inserir_dinamica(&ld, o);
             }
-            printf("\nLISTA ANTES:"); imprimir_dinamica(ld);
+            printf("\nLISTA ANTES:\n"); imprimir_dinamica(ld);
             if (algoritmo == 1) bubbleSortDinamica(ld, &comp_teste);
             else if (algoritmo == 2) insertionSortDinamica(&ld, &comp_teste);
             else if (algoritmo == 3) selectionSortDinamica(ld, &comp_teste);
+            else if (algoritmo == 4) quickSortDinamica(&ld, &comp_teste);
             else if (algoritmo == 5) mergeSortDinamica(&ld, &comp_teste);
-            printf("\nLISTA DEPOIS:"); imprimir_dinamica(ld);
+            printf("\nLISTA DEPOIS:\n"); imprimir_dinamica(ld);
             liberar_dinamica(ld);
         }
         printf("\nComparacoes no teste: %ld", comp_teste);
@@ -121,6 +125,7 @@ int main() {
             if (algoritmo == 1) bubbleSortEstatica(&le, &comp_rodada);
             else if (algoritmo == 2) insertionSortEstatica(&le, &comp_rodada);
             else if (algoritmo == 3) selectionSortEstatica(&le, &comp_rodada);
+            else if (algoritmo == 4) quickSortEstatica(&le, &comp_rodada);
             else if (algoritmo == 5) mergeSortEstatica(&le, &comp_rodada);
             clock_t end = clock();
 
@@ -138,6 +143,7 @@ int main() {
             if (algoritmo == 1) bubbleSortDinamica(ld, &comp_rodada);
             else if (algoritmo == 2) insertionSortDinamica(&ld, &comp_rodada);
             else if (algoritmo == 3) selectionSortDinamica(ld, &comp_rodada);
+            else if (algoritmo == 4) quickSortDinamica(&ld, &comp_rodada);
             else if (algoritmo == 5) mergeSortDinamica(&ld, &comp_rodada);
             clock_t end = clock();
 

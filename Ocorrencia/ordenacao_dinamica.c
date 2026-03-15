@@ -13,7 +13,7 @@ void bubbleSortDinamica(NoDinamico *inicio, long int *comp) {
         atual = inicio;
 
         while (atual->prox != fim) {
-            (*comp)++; // Métrica: Comparação de prioridade 
+            (*comp)++;  
             if (atual->dados.prioridade < atual->prox->dados.prioridade) {
                 Ocorrencia temp = atual->dados;
                 atual->dados = atual->prox->dados;
@@ -86,7 +86,7 @@ NoDinamico* intercalarDinamica(NoDinamico *esq, NoDinamico *dir, long int *comp)
 
     NoDinamico *resultado = NULL;
 
-    (*comp)++; // Métrica: Comparação durante a intercalação 
+    (*comp)++; //Comparação durante a intercalação 
     if (esq->dados.prioridade >= dir->dados.prioridade) {
         resultado = esq;
         resultado->prox = intercalarDinamica(esq->prox, dir, comp);
@@ -118,4 +118,51 @@ NoDinamico* mergeSortRecursivoDinamica(NoDinamico *inicio, long int *comp) {
 
 void mergeSortDinamica(NoDinamico **inicio, long int *comp) {
     *inicio = mergeSortRecursivoDinamica(*inicio, comp);
+}
+
+NoDinamico* partitionDinamica(NoDinamico* head, NoDinamico** left, NoDinamico** right, long int *comp) {
+    NoDinamico* pivot = head;
+    *left = NULL;
+    *right = NULL;
+    NoDinamico* curr = head->prox;
+    NoDinamico* next;
+    while (curr != NULL) {
+        next = curr->prox;
+        (*comp)++; // Comparação de prioridade no Quick Sort
+        if (curr->dados.prioridade >= pivot->dados.prioridade) {
+            curr->prox = *left;
+            *left = curr;
+        } else {
+            curr->prox = *right;
+            *right = curr;
+        }
+        curr = next;
+    }
+    return pivot;
+}
+
+NoDinamico* quickSortRecursivoDinamica(NoDinamico* head, long int *comp) {
+    if (head == NULL || head->prox == NULL) return head;
+
+    NoDinamico* left = NULL;
+    NoDinamico* right = NULL;
+    NoDinamico* pivot = partitionDinamica(head, &left, &right, comp);
+
+    left = quickSortRecursivoDinamica(left, comp);
+    right = quickSortRecursivoDinamica(right, comp);
+
+    NoDinamico* result = left;
+    if (left == NULL) {
+        result = pivot;
+    } else {
+        NoDinamico* temp = left;
+        while (temp->prox != NULL) temp = temp->prox;
+        temp->prox = pivot;
+    }
+    pivot->prox = right;
+    return result;
+}
+
+void quickSortDinamica(NoDinamico **inicio, long int *comp) {
+    *inicio = quickSortRecursivoDinamica(*inicio, comp);
 }
