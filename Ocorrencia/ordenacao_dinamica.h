@@ -5,5 +5,6 @@
 #include "lista_dinamica.h"
 
 void bubbleSortDinamica(NoDinamico *inicio);
+void selectionSortDinamica(NoDinamico *inicio);
 
 #endif

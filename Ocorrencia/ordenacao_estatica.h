@@ -6,5 +6,6 @@
 #include "lista_dinamica.h"
 
 void bubbleSortEstatica(ListaEstatica *l);
+void selectionSortEstatica(ListaEstatica *l);
 
 #endif

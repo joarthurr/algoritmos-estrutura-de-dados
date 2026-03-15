@@ -25,3 +25,24 @@ void bubbleSortDinamica(NoDinamico *inicio) {
         fim = atual;
     } while (trocou);
 }
+void selectionSortDinamica(NoDinamico *inicio) {
+    if (inicio == NULL) return;
+
+    NoDinamico *i, *j, *maior;
+
+    for (i = inicio; i->prox != NULL; i = i->prox) {
+        maior = i;
+
+        for (j = i->prox; j != NULL; j = j->prox) {
+            if (j->dados.prioridade > maior->dados.prioridade) {
+                maior = j;
+            }
+        }
+
+        if (maior != i) {
+            Ocorrencia temp = i->dados;
+            i->dados = maior->dados;
+            maior->dados = temp;
+        }
+    }
+}
