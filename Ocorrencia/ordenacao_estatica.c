@@ -45,6 +45,39 @@ void selectionSortEstatica(ListaEstatica *l) {
         }
     }
 }
+
+void insertionSortEstatica(ListaEstatica *l) {
+    if (l->inicio == -1 || l->nos[l->inicio].prox == -1) return;
+
+    int lista_ordenada = l->inicio;
+    int atual = l->nos[l->inicio].prox;
+    
+    l->nos[lista_ordenada].prox = -1;
+
+    while (atual != -1) {
+        int proximo_atual = l->nos[atual].prox;
+
+        if (l->nos[atual].dados.prioridade > l->nos[lista_ordenada].dados.prioridade) {
+            l->nos[atual].prox = lista_ordenada;
+            lista_ordenada = atual;
+        } else {
+            int temp = lista_ordenada;
+            while (l->nos[temp].prox != -1 && 
+                   l->nos[l->nos[temp].prox].dados.prioridade >= l->nos[atual].dados.prioridade) {
+                temp = l->nos[temp].prox;
+            }
+            
+            l->nos[atual].prox = l->nos[temp].prox;
+            l->nos[temp].prox = atual;
+        }
+
+        atual = proximo_atual;
+    }
+    
+    l->inicio = lista_ordenada;
+}
+
+
 // Função auxiliar para intercalar duas metades
 int intercalarEstatica(ListaEstatica *l, int esq, int dir) {
     if (esq == -1) return dir;
