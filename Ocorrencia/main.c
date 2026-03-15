@@ -45,7 +45,7 @@ int main() {
     int n, tipo, estrutura, algoritmo;
     const int REPETICOES = 100; 
 
-    printf("Ordenaçao de prioridade das Ocorencias:\n\n");
+    printf("Ordenacao de prioridade das Ocorencias:\n\n");
     printf("Estrutura (1-Estatica, 2-Dinamica): ");
     scanf("%d", &estrutura);
     printf("Algoritmo (1-Bubble, 2-Insertion, 3-Selection, 5-Merge): ");
@@ -57,7 +57,8 @@ int main() {
 
     //TESTE VISUAL
     if (n <= 20) {
-        printf("\nVisualização teste:");
+        long int comp_teste = 0;
+        printf("\n--- VISUALIZACAO TESTE ---");
         if (estrutura == 1) {
             ListaEstatica le;
             inicializar_estatica(&le);
@@ -66,10 +67,10 @@ int main() {
                 inserir_estatica(&le, o);
             }
             printf("\nLista antes:\n"); imprimir_estatica(&le);
-            if (algoritmo == 1) bubbleSortEstatica(&le);
-            else if (algoritmo == 2) insertionSortEstatica(&le);
-            else if (algoritmo == 3) selectionSortEstatica(&le);
-            else if (algoritmo == 5) mergeSortEstatica(&le);
+            if (algoritmo == 1) bubbleSortEstatica(&le, &comp_teste);
+            else if (algoritmo == 2) insertionSortEstatica(&le, &comp_teste);
+            else if (algoritmo == 3) selectionSortEstatica(&le, &comp_teste);
+            else if (algoritmo == 5) mergeSortEstatica(&le, &comp_teste);
             printf("\nLista depois:\n"); imprimir_estatica(&le);
         } else {
             NoDinamico *ld = NULL;
@@ -77,21 +78,26 @@ int main() {
                 Ocorrencia o = (tipo == 0) ? gerarOcorrencia(i+1) : (tipo == 1 ? gerarOcorrenciaInversa(i+1, n) : gerarOcorrenciaOrdenada(i+1, n));
                 inserir_dinamica(&ld, o);
             }
-            printf("\nLISTA ANTES:"); imprimir_dinamica(ld);
-            if (algoritmo == 1) bubbleSortDinamica(ld);
-            else if (algoritmo == 2) insertionSortDinamica(&ld);
-            else if (algoritmo == 3) selectionSortDinamica(ld);
-            else if (algoritmo == 5) mergeSortDinamica(&ld);
-            printf("\nLISTA DEPOIS (Ordenada por Prioridade):"); imprimir_dinamica(ld);
+            printf("\nLista antes:"); imprimir_dinamica(ld);
+            if (algoritmo == 1) bubbleSortDinamica(ld, &comp_teste);
+            else if (algoritmo == 2) insertionSortDinamica(&ld, &comp_teste);
+            else if (algoritmo == 3) selectionSortDinamica(ld, &comp_teste);
+            else if (algoritmo == 5) mergeSortDinamica(&ld, &comp_teste);
+            printf("\nLista depois:"); imprimir_dinamica(ld);
+            liberar_dinamica(ld);
         }
+        printf("\nComparacoes no teste: %ld", comp_teste);
         printf("\n--- FIM DO MODO TESTE ---\n\n");
     }
 
     //TESTE DE PERFORMANCE 
     double tempo_total = 0;
-    printf("Calculando media de tempo para %d repeticoes...\n", REPETICOES);
+    long long int total_comparacoes = 0; // Usando long long para evitar overflow em N grande
+    printf("Calculando media para %d repeticoes...\n", REPETICOES);
 
     for (int r = 0; r < REPETICOES; r++) {
+        long int comp_rodada = 0;
+        
         if (estrutura == 1) {
             ListaEstatica le;
             inicializar_estatica(&le);
@@ -101,13 +107,14 @@ int main() {
             }
 
             clock_t start = clock();
-            if (algoritmo == 1) bubbleSortEstatica(&le);
-            else if (algoritmo == 2) insertionSortEstatica(&le);
-            else if (algoritmo == 3) selectionSortEstatica(&le);
-            else if(algoritmo == 5) mergeSortEstatica(&le);
+            if (algoritmo == 1) bubbleSortEstatica(&le, &comp_rodada);
+            else if (algoritmo == 2) insertionSortEstatica(&le, &comp_rodada);
+            else if (algoritmo == 3) selectionSortEstatica(&le, &comp_rodada);
+            else if (algoritmo == 5) mergeSortEstatica(&le, &comp_rodada);
             clock_t end = clock();
 
             tempo_total += ((double)(end - start)) / CLOCKS_PER_SEC;
+            total_comparacoes += comp_rodada;
 
         } else {
             NoDinamico *ld = NULL;
@@ -117,20 +124,25 @@ int main() {
             }
 
             clock_t start = clock();
-            if (algoritmo == 1) bubbleSortDinamica(ld);
-            else if (algoritmo == 2) insertionSortDinamica(&ld);
-            else if (algoritmo == 3) selectionSortDinamica(ld);
-            else if (algoritmo == 5) mergeSortDinamica(&ld);
+            if (algoritmo == 1) bubbleSortDinamica(ld, &comp_rodada);
+            else if (algoritmo == 2) insertionSortDinamica(&ld, &comp_rodada);
+            else if (algoritmo == 3) selectionSortDinamica(ld, &comp_rodada);
+            else if (algoritmo == 5) mergeSortDinamica(&ld, &comp_rodada);
             clock_t end = clock();
+
             tempo_total += ((double)(end - start)) / CLOCKS_PER_SEC;
+            total_comparacoes += comp_rodada;
             liberar_dinamica(ld);
         }
     }
 
     double media_ms = (tempo_total / REPETICOES) * 1000.0;
+    long long int media_comp = total_comparacoes / REPETICOES;
+
     printf("\n========================================");
-    printf("\nRESULTADO FINAL PARA N = %d", n);
+    printf("\nRESULTADOS (MEDIAS) PARA N = %d", n);
     printf("\nTempo Medio: %f ms", media_ms);
+    printf("\nComparacoes Medias: %lld", media_comp); 
     printf("\n========================================\n");
 
     return 0;
