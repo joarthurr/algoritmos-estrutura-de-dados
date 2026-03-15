@@ -6,5 +6,6 @@
 
 void bubbleSortDinamica(NoDinamico *inicio);
 void selectionSortDinamica(NoDinamico *inicio);
+void mergeSortDinamica(NoDinamico **inicio);
 
 #endif

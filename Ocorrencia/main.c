@@ -48,7 +48,7 @@ int main() {
     printf("Ordenação de prioridade das Ocorencias:\n");
     printf("Estrutura (1-Estatica, 2-Dinamica): ");
     scanf("%d", &estrutura);
-    printf("Algoritmo (1-Bubble, 3-Selection): ");
+    printf("Algoritmo (1-Bubble, 3-Selection, 5-Merge): ");
     scanf("%d", &algoritmo);
     printf("Quantidade de dados (N): ");
     scanf("%d", &n);
@@ -100,6 +100,7 @@ int main() {
             clock_t start = clock();
             if (algoritmo == 1) bubbleSortEstatica(&le);
             else if (algoritmo == 3) selectionSortEstatica(&le);
+            else if(algoritmo == 5) mergeSortEstatica(&le);
             clock_t end = clock();
             tempo_total += ((double)(end - start)) / CLOCKS_PER_SEC;
 
@@ -113,6 +114,7 @@ int main() {
             clock_t start = clock();
             if (algoritmo == 1) bubbleSortDinamica(ld);
             else if (algoritmo == 3) selectionSortDinamica(ld);
+            else if (algoritmo == 5) mergeSortDinamica(&ld);
             clock_t end = clock();
             tempo_total += ((double)(end - start)) / CLOCKS_PER_SEC;
             liberar_dinamica(ld);
