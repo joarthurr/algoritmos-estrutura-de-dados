@@ -1,4 +1,5 @@
 
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -8,6 +9,19 @@
 #include "ordenacao_estatica.h"
 #include "ordenacao_dinamica.h"
 
+// GERAÇÃO DE GRÁFICOS
+void salvar_dados_csv(const char *nome_arquivo, int n, int estrutura, int algoritmo, int tipo, double tempo_ms, long long int comparacoes) {
+    FILE *file = fopen(nome_arquivo, "a");
+    if (file == NULL) return;
+    fseek(file, 0, SEEK_END);
+    if (ftell(file) == 0) {
+        fprintf(file, "N;Estrutura;Algoritmo;TipoDados;Tempo_ms;Comparacoes\n");
+    }
+    fprintf(file, "%d;%d;%d;%d;%.4f;%lld\n", n, estrutura, algoritmo, tipo, tempo_ms, comparacoes);
+    fclose(file);
+}
+
+// GERAÇÃO DE DADOS
 // GERAÇÃO DE GRÁFICOS
 void salvar_dados_csv(const char *nome_arquivo, int n, int estrutura, int algoritmo, int tipo, double tempo_ms, long long int comparacoes) {
     FILE *file = fopen(nome_arquivo, "a");
@@ -36,6 +50,9 @@ Ocorrencia gerarOcorrenciaInversa(int id, int n) {
     // Pior caso: Gera prioridades menores primeiro (ex: 1, 1, 2...) 
     o.prioridade = 1 + ((id - 1) * 5 / n); 
     if(o.prioridade > 5) o.prioridade = 5;
+    // Pior caso: Gera prioridades menores primeiro (ex: 1, 1, 2...) 
+    o.prioridade = 1 + ((id - 1) * 5 / n); 
+    if(o.prioridade > 5) o.prioridade = 5;
     o.distancia = id * 0.1f;
     o.tempoEspera = n - id;
     return o;
@@ -44,6 +61,9 @@ Ocorrencia gerarOcorrenciaInversa(int id, int n) {
 Ocorrencia gerarOcorrenciaOrdenada(int id, int n) {
     Ocorrencia o;
     o.id = id;
+    // Melhor caso: Gera prioridades maiores primeiro (5, 5, 4...)
+    o.prioridade = 5 - ((id - 1) * 5 / n); 
+    if(o.prioridade < 1) o.prioridade = 1;
     // Melhor caso: Gera prioridades maiores primeiro (5, 5, 4...)
     o.prioridade = 5 - ((id - 1) * 5 / n); 
     if(o.prioridade < 1) o.prioridade = 1;
@@ -57,7 +77,7 @@ int main() {
     int n, tipo, estrutura, algoritmo;
     const int REPETICOES = 100; 
 
-    printf("Ordenacao de prioridade das Ocorencias:\n\n");
+    printf("\nANALISE DE DESEMPENHO: ORDENACAO DE OCORRENCIAS\n");
     printf("Estrutura (1-Estatica, 2-Dinamica): ");
     scanf("%d", &estrutura);
     printf("Algoritmo (1-Bubble, 2-Insertion, 3-Selection, 5-Merge): ");
@@ -68,9 +88,10 @@ int main() {
     scanf("%d", &tipo);
 
     //TESTE 
+    //TESTE 
     if (n <= 20) {
         long int comp_teste = 0;
-        printf("\n--- VISUALIZACAO TESTE ---");
+        printf("\nVISUALIZACAO TESTE:");
         if (estrutura == 1) {
             ListaEstatica le;
             inicializar_estatica(&le);
@@ -78,34 +99,36 @@ int main() {
                 Ocorrencia o = (tipo == 0) ? gerarOcorrencia(i+1) : (tipo == 1 ? gerarOcorrenciaInversa(i+1, n) : gerarOcorrenciaOrdenada(i+1, n));
                 inserir_estatica(&le, o);
             }
-            printf("\nLista antes:\n"); imprimir_estatica(&le);
+            printf("\nLISTA ANTES:\n"); imprimir_estatica(&le);
             if (algoritmo == 1) bubbleSortEstatica(&le, &comp_teste);
             else if (algoritmo == 2) insertionSortEstatica(&le, &comp_teste);
             else if (algoritmo == 3) selectionSortEstatica(&le, &comp_teste);
             else if (algoritmo == 5) mergeSortEstatica(&le, &comp_teste);
-            printf("\nLista depois:\n"); imprimir_estatica(&le);
+            printf("\nLISTA DEPOIS:\n"); imprimir_estatica(&le);
         } else {
             NoDinamico *ld = NULL;
             for(int i=0; i<n; i++) {
                 Ocorrencia o = (tipo == 0) ? gerarOcorrencia(i+1) : (tipo == 1 ? gerarOcorrenciaInversa(i+1, n) : gerarOcorrenciaOrdenada(i+1, n));
                 inserir_dinamica(&ld, o);
             }
-            printf("\nLista antes:"); imprimir_dinamica(ld);
+            printf("\nLISTA ANTES:"); imprimir_dinamica(ld);
             if (algoritmo == 1) bubbleSortDinamica(ld, &comp_teste);
             else if (algoritmo == 2) insertionSortDinamica(&ld, &comp_teste);
             else if (algoritmo == 3) selectionSortDinamica(ld, &comp_teste);
             else if (algoritmo == 5) mergeSortDinamica(&ld, &comp_teste);
-            printf("\nLista depois:"); imprimir_dinamica(ld);
+            printf("\nLISTA DEPOIS:"); imprimir_dinamica(ld);
             liberar_dinamica(ld);
         }
         printf("\nComparacoes no teste: %ld", comp_teste);
-        printf("\n--- FIM DO MODO TESTE ---\n\n");
+        printf("\nFIM DO MODO TESTE\n\n");
     }
 
     //TESTE DE PERFORMANCE
+    //TESTE DE PERFORMANCE
     double tempo_total = 0;
-    long long int total_comparacoes = 0; // Usando long long para evitar overflow em N grande
-    printf("Calculando media para %d repeticoes...\n", REPETICOES);
+    long long int total_comparacoes = 0; 
+    
+    printf("Executando %d repeticoes para N=%d...\n", REPETICOES, n);
 
     for (int r = 0; r < REPETICOES; r++) {
         long int comp_rodada = 0;
@@ -154,20 +177,11 @@ int main() {
     // Salva os resultados 
     salvar_dados_csv("resultados_ordenacao.csv", n, estrutura, algoritmo, tipo, media_ms, media_comp);
 
-<<<<<<< HEAD
-    // Salva os resultados 
-    salvar_dados_csv("resultados_ordenacao.csv", n, estrutura, algoritmo, tipo, media_ms, media_comp);
-
     printf("\n========================================");
     printf("\nRESULTADO FINAL PARA N = %d", n);
     printf("\nTempo Medio: %.4f ms", media_ms);
     printf("\nComparacoes Medias: %lld", media_comp);
     printf("\nDados exportados para 'resultados_ordenacao.csv'");
-=======
-    printf("\n========================================");
-    printf("\nRESULTADOS (MEDIAS) PARA N = %d", n);
-    printf("\nTempo Medio: %f ms", media_ms);
-    printf("\nComparacoes Medias: %lld", media_comp); 
     printf("\n========================================\n");
 
     return 0;
