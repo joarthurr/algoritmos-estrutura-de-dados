@@ -9,7 +9,6 @@ typedef struct NoDinamico {
 } NoDinamico;
 
 // Operacoes basicas
-void inicializar_dinamic(NoDinamico **lista);
 void inserir_dinamica(NoDinamico **lista, Ocorrencia o);
 void imprimir_dinamica(NoDinamico *lista);
 NoDinamico* buscar_dinamico(NoDinamico *lista, int id);
