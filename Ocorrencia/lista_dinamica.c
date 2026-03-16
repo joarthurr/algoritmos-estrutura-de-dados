@@ -2,6 +2,10 @@
 #include <stdlib.h>
 #include "lista_dinamica.h"
 
+void inicializar_dinamica(NoDinamico **lista) {
+    *lista = NULL;
+}
+
 void inserir_dinamica(NoDinamico **lista, Ocorrencia o) {
     NoDinamico *novo = (NoDinamico*) malloc(sizeof(NoDinamico));
     if (novo == NULL) return;

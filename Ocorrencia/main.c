@@ -87,6 +87,7 @@ int main() {
             printf("\nLISTA DEPOIS:\n"); imprimir_estatica(&le);
         } else {
             NoDinamico *ld = NULL;
+            inicializar_dinamica(&ld);
             for(int i=0; i<n; i++) {
                 Ocorrencia o = (tipo == 0) ? gerarOcorrencia(i+1) : (tipo == 1 ? gerarOcorrenciaInversa(i+1, n) : gerarOcorrenciaOrdenada(i+1, n));
                 inserir_dinamica(&ld, o);
