@@ -2,7 +2,6 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-# 1. Configuração de Caminho e Leitura
 diretorio_atual = os.path.dirname(__file__)
 caminho_csv = os.path.join(diretorio_atual, 'resultados_ordenacao.csv')
 
@@ -12,12 +11,10 @@ except FileNotFoundError:
     print(f"Erro: O arquivo '{caminho_csv}' não foi encontrado.")
     exit()
 
-# 2. Dicionários de Mapeamento
 algoritmos = {1: 'Bubble', 2: 'Insertion', 3: 'Selection', 4: 'Quick', 5: 'Merge'}
 tipos_nome = {0: 'Aleatório', 1: 'Inverso', 2: 'Ordenado'}
 est_nome = {1: 'Estática', 2: 'Dinâmica'}
 
-# 3. Loops para gerar os gráficos de CORRELAÇÃO
 for est_id, est_label in est_nome.items():
     for tipo_id, tipo_label in tipos_nome.items():
         
@@ -31,23 +28,19 @@ for est_id, est_label in est_nome.items():
                        (df['Algoritmo'] == alg_id) & 
                        (df['TipoDados'] == tipo_id)]
             
-            # Ordenamos por Comparações para a linha não ficar "vai-e-volta"
             dados = dados.sort_values('Comparacoes')
             
             if not dados.empty:
-                # EIXO X: Comparações | EIXO Y: Tempo
                 plt.plot(dados['Comparacoes'], dados['Tempo_ms'], marker='o', label=nome_alg, linewidth=2)
                 tem_dados = True
 
-        # 4. Finalização
         if tem_dados:
             plt.title(f'Correlação: Esforço vs Tempo ({est_label} - {tipo_label})')
             plt.xlabel('Número de Comparações (Esforço)')
             plt.ylabel('Tempo de Execução (ms)')
             plt.legend()
             plt.grid(True, linestyle='--', alpha=0.6)
-            
-            # Nome do arquivo focado em correlação
+
             nome_arquivo = f'correlacao_{est_label}_{tipo_label}.png'.replace(" ", "_")
             plt.savefig(nome_arquivo, dpi=300, bbox_inches='tight')
             plt.close()
